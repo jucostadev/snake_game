@@ -1,6 +1,6 @@
-# EFCD: Projeto de tecnologias e programação de sistemas de informação
+# UFCD: Projeto de tecnologias e programação de sistemas de informação
 # Código: 5425
-# Formandos: Júlia Costa, Lisandra Cunha
+# Formandos: Júlia Costa, Lisandra Nair
 # Data: 31.05.2024
 
 import pygame
@@ -8,170 +8,170 @@ from random import randint
 from sys import exit
 import time
 
-# iniciar biblioteca Pygame
+# start Pygame library
 pygame.init()
 
-# características do ecrã
-pygame.display.set_caption("Jogo - Snake")
-pygame.display.set_icon(pygame.image.load("IconSnake.jpeg"))
-LARGURA = 700
-ALTURA = 500
-janela = pygame.display.set_mode((LARGURA, ALTURA))
-relogio = pygame.time.Clock()
+# screen features
+pygame.display.set_caption("Game - Snake")
+pygame.display.set_icon(pygame.image.load("icon_snake.jpeg"))
+WIDTH = 700
+HEIGHT = 500
+window = pygame.display.set_mode((WIDTH, HEIGHT))
+clock = pygame.time.Clock()
 
-# definir cores
-PRETO = (0, 0, 0)
-BRANCO = (255, 255, 255)
-VERDE = (35, 142, 35)
+# set color
+BLACK = (0, 0, 0)
+WHITE = (255, 255, 255)
+GREEN = (35, 142, 35)
 
-# definir variáveis
-tamanho_pixel = 20
-velocidade_jogo = 10 # em milisegundos
+# set variables
+pixel_size = 20
+game_speed = 10 # in milliseconds
 
-# importar imagens
-maca = pygame.image.load("Maca.png")
+# import images
+apple = pygame.image.load("apple.png")
 kiwi = pygame.image.load("Kiwi.png")
 
-# definir funções
-def definir_maca():
-    maca_x = int(randint(0, LARGURA - maca.get_width()))
-    maca_y = int(randint(0, ALTURA - maca.get_height()))
-    return maca_x, maca_y
+# set functions
+def set_apple():
+    apple_x = int(randint(0, WIDTH - apple.get_width()))
+    apple_y = int(randint(0, HEIGHT - apple.get_height()))
+    return apple_x, apple_y
 
-def definir_kiwi():
-    kiwi_x = int(randint(0, LARGURA - kiwi.get_width()))
-    kiwi_y = int(randint(0, ALTURA - kiwi.get_height()))
+def set_kiwi():
+    kiwi_x = int(randint(0, WIDTH - kiwi.get_width()))
+    kiwi_y = int(randint(0, HEIGHT - kiwi.get_height()))
     return kiwi_x, kiwi_y
 
-# estado inical do jogo
-pontuacao = 0
-temporizador_kiwi = 0
-fim_jogo = False
+# initial state of the game
+score = 0
+kiwi_timer = 0
+game_over = False
 
-# definir fontes de texto do jogo
-fonte_pontuacao = pygame.font.Font("OCRAEXT.TTF", 25)
-fonte_fim_jogo = pygame.font.Font("OCRAEXT.TTF", 50)
+# set game text fonts
+score_font = pygame.font.Font("OCRAEXT.TTF", 25)
+game_over_font = pygame.font.Font("OCRAEXT.TTF", 50)
 
-# definir sons do jogo
-som_pontos = pygame.mixer.Sound("Coin.wav")
-som_fim_jogo = pygame.mixer.Sound("Oops.wav")
-pygame.mixer.music.load("musica_fundo.mp3")
+# set game sounds
+score_sound = pygame.mixer.Sound("coin.wav")
+game_over_sound = pygame.mixer.Sound("game_over_sound.wav")
+pygame.mixer.music.load("background_music.mp3")
 
-# reproduzir música de fundo
+# play background music
 pygame.mixer.music.play(-1)
 pygame.mixer.music.set_volume(0.30)
 
-# posição e velocidade inicial da cobra
-pos_x_cobra = LARGURA / 2
-pos_y_cobra = ALTURA / 2
-velocidade_X = 0
-velocidade_Y = 0
-tamanho_cobra = 1 # nº de pixeis da cobra
+# initial position and speed of the snake
+pos_x_snake = WIDTH / 2
+pos_y_snake = HEIGHT / 2
+x_speed = 0
+y_speed = 0
+snake_size = 1 # number of pixels in the snake
 pixels = []
 
-# posição inicial dos alimentos do jogo
-maca_x, maca_y = definir_maca()
-kiwi_x, kiwi_y = definir_kiwi()
+# starting position of game foods
+apple_x, apple_y = set_apple()
+kiwi_x, kiwi_y = set_kiwi()
 
-# loop principal
-while fim_jogo == False:
-    janela.fill(PRETO)
+# main loop
+while game_over == False:
+    window.fill(BLACK)
 
-    # encerramento do jogo
-    for evento in pygame.event.get():
-        if evento.type == pygame.QUIT:
+    # game ending
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
             pygame.quit()
             exit()
 
-    # interação com o precionar das teclas
-    teclas = pygame.key.get_pressed()
+    # interaction with pressing the keys
+    keys = pygame.key.get_pressed()
 
-    if teclas[pygame.K_UP]:
-        velocidade_X = 0
-        velocidade_Y = -tamanho_pixel
-    elif teclas[pygame.K_DOWN]:
-        velocidade_X = 0
-        velocidade_Y = tamanho_pixel
-    elif teclas[pygame.K_LEFT]:
-        velocidade_X = -tamanho_pixel
-        velocidade_Y = 0
-    elif teclas[pygame.K_RIGHT]:
-        velocidade_X = tamanho_pixel
-        velocidade_Y = 0
+    if keys[pygame.K_UP]:
+        x_speed = 0
+        y_speed = - pixel_size
+    elif keys[pygame.K_DOWN]:
+        x_speed = 0
+        y_speed = pixel_size
+    elif keys[pygame.K_LEFT]:
+        X_speed = - pixel_size
+        y_speed = 0
+    elif keys[pygame.K_RIGHT]:
+        x_speed = pixel_size
+        y_speed = 0
 
-    # redesenhar os alimentos do jogo
-    repor_maca = janela.blit(maca, (maca_x, maca_y))
-    repor_kiwi = janela.blit(kiwi, (kiwi_x, kiwi_y))
+    # redesign the game's foods
+    replace_apple = window.blit(apple, (apple_x, apple_y))
+    replace_kiwi = window.blit(kiwi, (kiwi_x, kiwi_y))
 
-    # atualizar a posição da cobra
-    pos_x_cobra += velocidade_X
-    pos_y_cobra += velocidade_Y
+    # update snake position
+    pos_x_snake += x_speed
+    pos_y_snake += y_speed
 
-    # atualizar tamanho da cobra
-    pixels.append([pos_x_cobra, pos_y_cobra])
-    if len(pixels) > tamanho_cobra:
+    # update snake size
+    pixels.append([pos_x_snake, pos_y_snake])
+    if len(pixels) > snake_size:
         del pixels[0]
 
-    # verificar colisão com a própria cobra
+    # check collision with the snake itself
     for pixel in pixels[:-1]:
-        if pixel == [pos_x_cobra, pos_y_cobra]:
-            fim_jogo = True
+        if pixel == [pos_x_snake, pos_y_snake]:
+            game_over = True
 
-    # redesenhar a cobra
+    # redesign the snake
     for pixel in pixels:
-        cobra = pygame.draw.rect(janela, VERDE, [pixel[0], pixel[1], tamanho_pixel, tamanho_pixel])
+        snake = pygame.draw.rect(window, GREEN, [pixel[0], pixel[1], pixel_size, pixel_size])
 
-    # verificar colisão com os limites do ecrã
-    if (pos_x_cobra < 0 or pos_x_cobra + tamanho_pixel > LARGURA or pos_y_cobra < 0 or pos_y_cobra + tamanho_pixel > ALTURA):
-        fim_jogo = True
+    # check collision with screen boundaries
+    if (pos_x_snake < 0 or pos_x_snake + pixel_size > WIDTH or pos_y_snake < 0 or pos_y_snake + pixel_size > HEIGHT):
+        game_over = True
 
-    # verificar colisão com a maçã
-    if cobra.colliderect(repor_maca):
-       maca = pygame.image.load("hide.png")
-       maca_x, maca_y = definir_maca()
-       maca = pygame.image.load("Maca.png")
-       tamanho_cobra += 1
-       pontuacao += 1
-       som_pontos.play()
+    # check collision with apple
+    if snake.colliderect(replace_apple):
+       apple = pygame.image.load("hide.png")
+       apple_x, apple_y = set_apple()
+       apple = pygame.image.load("apple.png")
+       snake_size += 1
+       score += 1
+       score_sound.play()
 
-    # verificar colisão com o kiwi
-    if cobra.colliderect(repor_kiwi):
+    # check collision with kiwi
+    if snake.colliderect(replace_kiwi):
        kiwi = pygame.image.load("hide.png")
-       kiwi_x, kiwi_y = definir_kiwi()
+       kiwi_x, kiwi_y = set_kiwi()
        kiwi = pygame.image.load("Kiwi.png")
-       som_pontos.play()
-       tamanho_cobra += 1
-       pontuacao += 2
-       velocidade_jogo += 10
-       temporizador_kiwi = time.time()
+       score_sound.play()
+       snake_size += 1
+       score += 2
+       game_speed += 10
+       kiwi_timer = time.time()
 
-    # temporizador do aumento da velocidade quando come o kiwi
-    if temporizador_kiwi > 0 and time.time() - temporizador_kiwi >= 5:
-        velocidade_jogo = 15
-        temporizador_kiwi = 0    
+    # speed increase timer when eat kiwi
+    if kiwi_timer > 0 and time.time() - kiwi_timer >= 5:
+        game_speed = 15
+        kiwi_timer = 0    
 
-    # definir texto da pontoação
-    texto_pontuacao = fonte_pontuacao.render(f"Pontuação:{pontuacao}", True, BRANCO)
-    janela.blit(texto_pontuacao, (10, 10))
+    # set score text fonts
+    score_text = score_font.render(f"Pontuação:{score}", True, WHITE)
+    window.blit(score_text, (10, 10))
 
-    # definir a atualização do ecrã
+    # set screen update
     pygame.display.update()
-    relogio.tick(velocidade_jogo)
+    clock.tick(game_speed)
 
-# definir ecrã de "fim de jogo"
-if fim_jogo == True:
-    janela.fill(PRETO)
-    texto_fim_jogo = fonte_fim_jogo.render("FIM DO JOGO!", True, BRANCO)
-    janela.blit(texto_fim_jogo, (175, 175))
-    texto_pontuacao_final = fonte_pontuacao.render(f"Pontuação final: {pontuacao}", True, BRANCO)
-    janela.blit(texto_pontuacao_final, (220, 250))
-    som_fim_jogo.play()
+# set "game over" screen
+if game_over == True:
+    window.fill(BLACK)
+    game_over_text = game_over_font.render("FIM DO JOGO!", True, WHITE)
+    window.blit(game_over_text, (175, 175))
+    final_score_text = score_font.render(f"Pontuação final: {score}", True, WHITE)
+    window.blit(final_score_text, (220, 250))
+    game_over_sound.play()
     pygame.mixer.music.stop()
 
     pygame.display.update()
 
     while True:
-        for evento in pygame.event.get():
-            if evento.type == pygame.QUIT:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
                 pygame.quit()
                 exit()
