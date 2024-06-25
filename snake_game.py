@@ -1,7 +1,4 @@
-# UFCD: Projeto de tecnologias e programação de sistemas de informação
-# Código: 5425
-# Formandos: Júlia Costa, Lisandra Nair
-# Data: 31.05.2024
+# Júlia Costa, Lisandra Nair
 
 import pygame
 from random import randint
